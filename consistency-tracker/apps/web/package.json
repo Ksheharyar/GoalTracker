@@ -1,0 +1,25 @@
+{
+  "name": "consistency-tracker-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "chart.js": "^4.4.8",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.474.0",
+    "next": "^15.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-chartjs-2": "^5.3.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17"
+  }
+}

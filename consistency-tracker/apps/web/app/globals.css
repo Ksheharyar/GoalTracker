@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(104, 225, 253, 0.16), transparent 24%),
+    radial-gradient(circle at 80% 0%, rgba(245, 158, 11, 0.12), transparent 22%),
+    linear-gradient(180deg, #07111f 0%, #050b16 48%, #030712 100%);
+  color: #eff6ff;
+  font-family: var(--font-body), sans-serif;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 95%);
+  opacity: 0.45;
+}
+
+::selection {
+  background: rgba(104, 225, 253, 0.28);
+  color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07111f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(104, 225, 253, 0.4), rgba(45, 212, 191, 0.4));
+  border-radius: 999px;
+  border: 2px solid #07111f;
+}
+
+@layer components {
+  .card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .dashboard-container {
+    @apply mx-auto w-full max-w-[1400px] px-6 py-6;
+  }
+
+  .top-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr) 320px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .dashboard-grid > * {
+    min-width: 0;
+  }
+
+  .sidebar {
+    position: relative;
+    height: fit-content;
+    width: 100%;
+  }
+
+  .timer-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .timer-card-inner {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  .timer-box {
+    width: 100%;
+    padding: 24px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .timer-display {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .timer-digits {
+    font-size: clamp(40px, 5vw, 72px);
+    letter-spacing: 4px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .timer-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .goal-panel {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .timeline-section {
+    margin-top: 48px;
+    width: 100%;
+  }
+
+  .timeline-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .heatmap-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .heatmap-weekdays {
+    display: grid;
+    grid-template-rows: repeat(7, 14px);
+    row-gap: 4px;
+    align-content: start;
+    font-size: 12px;
+    color: #8b949e;
+  }
+
+  .heatmap-grid {
+    display: grid;
+    width: max-content;
+    grid-template-rows: repeat(7, 14px);
+    gap: 4px;
+    align-content: start;
+    justify-content: start;
+  }
+
+  .heatmap-cell {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+
+  .heatmap-cell.empty {
+    background: rgba(148, 163, 184, 0.14);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+  }
+
+  .heatmap-weekdays span {
+    display: flex;
+    align-items: center;
+    height: 14px;
+    line-height: 1;
+  }
+
+  .today-sessions-scroll {
+    max-height: 26rem;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+
+  .today-sessions-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .today-sessions-scroll::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+  }
+
+  .today-sessions-scroll::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.28);
+    border-radius: 9999px;
+  }
+
+  .glass-panel {
+    @apply border border-white/10 bg-white/5 shadow-soft backdrop-blur-xl;
+  }
+
+  .section-shell {
+    @apply mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8;
+  }
+
+  .hero-glow {
+    background: radial-gradient(circle at top left, rgba(104, 225, 253, 0.16), transparent 32%),
+      radial-gradient(circle at bottom right, rgba(245, 158, 11, 0.12), transparent 28%);
+  }
+
+}
