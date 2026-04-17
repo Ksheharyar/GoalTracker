@@ -60,8 +60,7 @@ function AuthProvider({ children }) {
       },
       async signupUser(credentials) {
         const response = await signup(credentials);
-        dispatch({ type: 'setUser', user: response.user });
-        return response.user;
+        return response;
       },
       async logoutUser() {
         await logout();

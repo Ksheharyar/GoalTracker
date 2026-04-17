@@ -24,4 +24,41 @@ function fetchMe() {
   return apiFetch('/auth/me');
 }
 
-export { signup, login, logout, fetchMe };
+function requestEmailVerification(email) {
+  return apiFetch('/auth/verify-email/request', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+function confirmEmailVerification(token) {
+  return apiFetch('/auth/verify-email/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ token }),
+  });
+}
+
+function requestPasswordReset(email) {
+  return apiFetch('/auth/password-reset/request', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+function confirmPasswordReset(token, password, passwordConfirm) {
+  return apiFetch('/auth/password-reset/confirm', {
+    method: 'POST',
+    body: JSON.stringify({ token, password, passwordConfirm }),
+  });
+}
+
+export {
+  signup,
+  login,
+  logout,
+  fetchMe,
+  requestEmailVerification,
+  confirmEmailVerification,
+  requestPasswordReset,
+  confirmPasswordReset,
+};

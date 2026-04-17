@@ -13,6 +13,7 @@ import ReminderBanner from '@/components/dashboard/ReminderBanner';
 import EmptyState from '@/components/shared/EmptyState';
 import { fetchContributionGrid, fetchDashboardSummary } from '@/lib/api/dashboard';
 import { formatDurationLabel } from '@/lib/utils/format';
+import { useStopwatch } from '@/lib/store/stopwatch-store';
 
 function formatSessionTimeRange(startedAt, stoppedAt) {
   const formatter = new Intl.DateTimeFormat('en', {
@@ -24,9 +25,9 @@ function formatSessionTimeRange(startedAt, stoppedAt) {
 }
 
 export default function DashboardPage() {
+  const { selectedGoalId, setSelectedGoalId } = useStopwatch();
   const [summary, setSummary] = useState(null);
   const [cells, setCells] = useState([]);
-  const [selectedGoalId, setSelectedGoalId] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -74,7 +75,7 @@ export default function DashboardPage() {
     if (!selectedGoalExists) {
       setSelectedGoalId(activeGoals[0].id || activeGoals[0]._id);
     }
-  }, [activeGoals, selectedGoalId]);
+  }, [activeGoals, selectedGoalId, setSelectedGoalId]);
 
   return (
     <section className="min-w-0 space-y-6">
@@ -158,7 +159,7 @@ export default function DashboardPage() {
           <div className="dashboard-grid">
             <GoalPickerPanel goals={activeGoals} selectedGoalId={selectedGoalId} onSelectGoal={setSelectedGoalId} />
 
-            <StopwatchCard goals={activeGoals} selectedGoalId={selectedGoalId} onSaved={loadDashboard} />
+            <StopwatchCard goals={activeGoals} onSaved={loadDashboard} />
 
             <Card className="goal-panel self-start p-6">
               <div className="flex items-center justify-between gap-3">

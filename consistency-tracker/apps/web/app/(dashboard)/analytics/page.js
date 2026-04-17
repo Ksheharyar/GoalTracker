@@ -72,7 +72,7 @@ export default function AnalyticsPage() {
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-200/70">Analytics</p>
           <h2 className="mt-3 font-display text-3xl font-semibold text-white">Weekly and monthly progress</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
-            Chart.js visualizes your consistency curve, streak strength, and time invested over weekly and monthly windows.
+            Track your consistency curve, streak strength, and time invested across weekly and monthly windows.
           </p>
         </div>
         <Button variant="secondary" onClick={loadAnalytics} disabled={loading}>

@@ -1,258 +1,32 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import { Pause, Play, Square } from 'lucide-react';
 import Card from '@/components/shared/Card';
 import Button from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
-import { autoSaveSession, saveSession } from '@/lib/api/sessions';
+import { useStopwatch } from '@/lib/store/stopwatch-store';
 import { formatSeconds, formatDurationLabel } from '@/lib/utils/format';
 
-const MIN_AUTO_SAVE_SECONDS = 5;
-
-function StopwatchCard({ goals = [], selectedGoalId = '', onSaved }) {
-  const [status, setStatus] = useState('idle');
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [accumulatedSeconds, setAccumulatedSeconds] = useState(0);
-  const [startedAt, setStartedAt] = useState(null);
-  const [notes, setNotes] = useState('');
-  const [error, setError] = useState('');
-  const [saving, setSaving] = useState(false);
-  const timerRef = useRef(null);
-  const runStartedAtRef = useRef(null);
-  const statusRef = useRef(status);
-  const elapsedSecondsRef = useRef(elapsedSeconds);
-  const accumulatedSecondsRef = useRef(accumulatedSeconds);
-  const startedAtRef = useRef(startedAt);
-  const notesRef = useRef(notes);
-  const selectedGoalIdRef = useRef(selectedGoalId);
-  const onSavedRef = useRef(onSaved);
-  const autoSaveInFlightRef = useRef(false);
-  const autoSavedKeyRef = useRef('');
-
-  useEffect(() => {
-    statusRef.current = status;
-  }, [status]);
-
-  useEffect(() => {
-    elapsedSecondsRef.current = elapsedSeconds;
-  }, [elapsedSeconds]);
-
-  useEffect(() => {
-    accumulatedSecondsRef.current = accumulatedSeconds;
-  }, [accumulatedSeconds]);
-
-  useEffect(() => {
-    startedAtRef.current = startedAt;
-  }, [startedAt]);
-
-  useEffect(() => {
-    notesRef.current = notes;
-  }, [notes]);
-
-  useEffect(() => {
-    selectedGoalIdRef.current = selectedGoalId;
-  }, [selectedGoalId]);
-
-  useEffect(() => {
-    onSavedRef.current = onSaved;
-  }, [onSaved]);
-
-  useEffect(() => {
-    if (status !== 'running') {
-      return undefined;
-    }
-
-    timerRef.current = window.setInterval(() => {
-      const runningSeconds = Math.floor((Date.now() - runStartedAtRef.current) / 1000);
-      setElapsedSeconds(accumulatedSeconds + runningSeconds);
-    }, 250);
-
-    return () => {
-      window.clearInterval(timerRef.current);
-    };
-  }, [status, accumulatedSeconds]);
+function StopwatchCard({ goals = [], onSaved }) {
+  const {
+    status,
+    elapsedSeconds,
+    selectedGoalId,
+    notes,
+    saving,
+    error,
+    setNotes,
+    start,
+    pause,
+    stop,
+    save,
+  } = useStopwatch();
 
   const selectedGoal = useMemo(
     () => goals.find((goal) => (goal.id || goal._id) === selectedGoalId),
     [goals, selectedGoalId]
   );
-
-  function start() {
-    if (!selectedGoalId) {
-      setError('Select a goal before starting the stopwatch.');
-      return;
-    }
-
-    setError('');
-    if (status === 'idle' || status === 'stopped') {
-      setStartedAt(new Date());
-      setAccumulatedSeconds(0);
-      setElapsedSeconds(0);
-    }
-
-    runStartedAtRef.current = Date.now();
-    setStatus('running');
-  }
-
-  function pause() {
-    if (status !== 'running') {
-      return;
-    }
-
-    window.clearInterval(timerRef.current);
-    const runningSeconds = Math.floor((Date.now() - runStartedAtRef.current) / 1000);
-    const totalSeconds = accumulatedSeconds + runningSeconds;
-    setAccumulatedSeconds(totalSeconds);
-    setElapsedSeconds(totalSeconds);
-    setStatus('paused');
-  }
-
-  function stop() {
-    if (status === 'running') {
-      const runningSeconds = Math.floor((Date.now() - runStartedAtRef.current) / 1000);
-      const totalSeconds = accumulatedSeconds + runningSeconds;
-      setAccumulatedSeconds(totalSeconds);
-      setElapsedSeconds(totalSeconds);
-    }
-
-    window.clearInterval(timerRef.current);
-    setStatus('stopped');
-  }
-
-  async function save() {
-    if (!selectedGoalId || !startedAt || elapsedSeconds < 1) {
-      setError('Run a session before saving it.');
-      return;
-    }
-
-    setSaving(true);
-    setError('');
-
-    try {
-      const stoppedAt = new Date();
-      const response = await saveSession({
-        goalId: selectedGoalId,
-        sessionDate: new Date().toISOString().slice(0, 10),
-        startedAt: startedAt.toISOString(),
-        stoppedAt: stoppedAt.toISOString(),
-        durationSeconds: elapsedSeconds,
-        notes,
-        autosaveKey: `${selectedGoalId}:${startedAt.toISOString()}`,
-      });
-
-      autoSavedKeyRef.current = '';
-      setStatus('idle');
-      setElapsedSeconds(0);
-      setAccumulatedSeconds(0);
-      setStartedAt(null);
-      setNotes('');
-      if (onSaved) {
-        onSaved(response.session);
-      }
-    } catch (saveError) {
-      setError(saveError.message || 'Failed to save the session.');
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  function getSessionSnapshot() {
-    const currentStatus = statusRef.current;
-    const currentStartedAt = startedAtRef.current;
-    const currentGoalId = selectedGoalIdRef.current;
-
-    if (!currentStartedAt || !currentGoalId || currentStatus === 'idle') {
-      return null;
-    }
-
-    let totalSeconds = elapsedSecondsRef.current;
-    if (currentStatus === 'running' && runStartedAtRef.current) {
-      const runningSeconds = Math.floor((Date.now() - runStartedAtRef.current) / 1000);
-      totalSeconds = accumulatedSecondsRef.current + runningSeconds;
-    }
-
-    return {
-      status: currentStatus,
-      startedAt: currentStartedAt,
-      goalId: currentGoalId,
-      notes: notesRef.current,
-      totalSeconds: Math.max(0, Math.floor(totalSeconds)),
-    };
-  }
-
-  async function autoFinalizeSession(trigger) {
-    if (autoSaveInFlightRef.current) {
-      return;
-    }
-
-    const snapshot = getSessionSnapshot();
-    if (!snapshot || snapshot.totalSeconds < MIN_AUTO_SAVE_SECONDS) {
-      return;
-    }
-
-    const autosaveKey = `${snapshot.goalId}:${snapshot.startedAt.toISOString()}`;
-    if (autoSavedKeyRef.current === autosaveKey) {
-      return;
-    }
-
-    const stoppedAt = new Date();
-    const payload = {
-      goalId: snapshot.goalId,
-      sessionDate: new Date().toISOString().slice(0, 10),
-      startedAt: snapshot.startedAt.toISOString(),
-      stoppedAt: stoppedAt.toISOString(),
-      durationSeconds: snapshot.totalSeconds,
-      notes: snapshot.notes,
-      autosaveKey,
-    };
-
-    autoSaveInFlightRef.current = true;
-    autoSavedKeyRef.current = autosaveKey;
-
-    window.clearInterval(timerRef.current);
-    setAccumulatedSeconds(snapshot.totalSeconds);
-    setElapsedSeconds(snapshot.totalSeconds);
-    setStatus('paused');
-
-    try {
-      const response = await autoSaveSession(payload);
-      setStatus('idle');
-      setElapsedSeconds(0);
-      setAccumulatedSeconds(0);
-      setStartedAt(null);
-      setNotes('');
-      autoSavedKeyRef.current = '';
-
-      if (onSavedRef.current) {
-        onSavedRef.current(response?.session);
-      }
-    } catch (_autoSaveError) {
-      if (trigger !== 'pagehide') {
-        setError('Unable to auto-save session. Please use Save Session manually.');
-      }
-      autoSavedKeyRef.current = '';
-    } finally {
-      autoSaveInFlightRef.current = false;
-    }
-  }
-
-  useEffect(() => {
-    function handlePageHide(event) {
-      // Ignore bfcache transitions so tab/app switches do not end the session.
-      if (event.persisted) {
-        return;
-      }
-
-      autoFinalizeSession('pagehide');
-    }
-
-    window.addEventListener('pagehide', handlePageHide);
-
-    return () => {
-      window.removeEventListener('pagehide', handlePageHide);
-    };
-  }, []);
 
   return (
     <Card className="timer-card p-6">
@@ -310,7 +84,7 @@ function StopwatchCard({ goals = [], selectedGoalId = '', onSaved }) {
           <Button className="w-full" onClick={stop} variant="secondary" size="lg" disabled={!selectedGoalId || status === 'idle' || status === 'stopped'}>
             <Square className="h-4 w-4" /> Stop
           </Button>
-          <Button className="w-full" onClick={save} variant="primary" size="lg" disabled={saving || !selectedGoalId || status === 'idle' || status === 'running'}>
+          <Button className="w-full" onClick={() => save({ onSaved })} variant="primary" size="lg" disabled={saving || !selectedGoalId || status === 'idle' || status === 'running'}>
             Save Session
           </Button>
         </div>

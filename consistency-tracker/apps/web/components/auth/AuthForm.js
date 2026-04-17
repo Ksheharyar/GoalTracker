@@ -1,8 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/store/auth-store';
 import Button from '@/components/shared/Button';
 import Card from '@/components/shared/Card';
@@ -36,12 +37,26 @@ function AuthForm({ mode }) {
   const { loginUser, signupUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [form, setForm] = useState({ name: '', email: '', password: '' });
+
+  useEffect(() => {
+    if (mode !== 'login') {
+      return;
+    }
+
+    if (searchParams.get('verified') === '1') {
+      setNotice('Email verified successfully. You can log in now.');
+    } else if (searchParams.get('reset') === '1') {
+      setNotice('Password reset successfully. Please log in with your new password.');
+    }
+  }, [mode, searchParams]);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setLoading(true);
     setError('');
+    setNotice('');
 
     try {
       const payload = {
@@ -51,7 +66,10 @@ function AuthForm({ mode }) {
 
       if (mode === 'signup') {
         payload.name = form.name;
-        await signupUser(payload);
+        const response = await signupUser(payload);
+        setNotice(response.message || 'Verification email sent. Please verify your email before logging in.');
+        setForm({ name: '', email: '', password: '' });
+        return;
       } else {
         await loginUser(payload);
       }
@@ -63,6 +81,29 @@ function AuthForm({ mode }) {
     } finally {
       setLoading(false);
     }
+  }
+
+  if (mode === 'signup' && notice) {
+    return (
+      <Card className="mx-auto w-full max-w-xl border border-white/10 bg-slate-950/50 p-8 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-cyan-100">
+          <BrandMark showLabel={false} size={18} className="gap-0" />
+          <span>GoalTracker</span>
+        </div>
+
+        <h2 className="mt-6 font-display text-3xl font-semibold tracking-tight text-white">Check your email</h2>
+        <p className="mt-4 text-sm leading-7 text-slate-300">{notice}</p>
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Link href="/verify-email" className="font-semibold text-cyan-200 hover:text-cyan-100">
+            Didn’t get it? Send verification again
+          </Link>
+          <Link href="/login" className="font-semibold text-cyan-200 hover:text-cyan-100">
+            Go to login
+          </Link>
+        </div>
+      </Card>
+    );
   }
 
   return (
@@ -124,6 +165,16 @@ function AuthForm({ mode }) {
             onChange={(event) => setForm({ ...form, password: event.target.value })}
             required
           />
+
+          {mode === 'login' ? (
+            <div className="text-right text-sm">
+              <Link href="/reset-password" className="font-semibold text-cyan-200 hover:text-cyan-100">
+                Forgot password?
+              </Link>
+            </div>
+          ) : null}
+
+          {notice ? <p className="rounded-2xl border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">{notice}</p> : null}
 
           {error ? <p className="rounded-2xl border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">{error}</p> : null}
 

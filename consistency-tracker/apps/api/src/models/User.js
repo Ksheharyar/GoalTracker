@@ -20,6 +20,38 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerifiedAt: {
+      type: Date,
+      default: null,
+    },
+    emailVerificationTokenHash: {
+      type: String,
+      default: null,
+      index: true,
+      sparse: true,
+    },
+    emailVerificationTokenExpiresAt: {
+      type: Date,
+      default: null,
+    },
+    passwordResetTokenHash: {
+      type: String,
+      default: null,
+      index: true,
+      sparse: true,
+    },
+    passwordResetTokenExpiresAt: {
+      type: Date,
+      default: null,
+    },
+    authVersion: {
+      type: Number,
+      default: 0,
+    },
     timezone: {
       type: String,
       default: 'UTC',
@@ -38,6 +70,11 @@ userSchema.set('toJSON', {
   virtuals: true,
   transform(_doc, ret) {
     delete ret.passwordHash;
+    delete ret.emailVerificationTokenHash;
+    delete ret.emailVerificationTokenExpiresAt;
+    delete ret.passwordResetTokenHash;
+    delete ret.passwordResetTokenExpiresAt;
+    delete ret.authVersion;
     delete ret.__v;
     return ret;
   },
