@@ -63,12 +63,20 @@ function hashToken(token) {
   return crypto.createHash('sha256').update(token).digest('hex');
 }
 
+function normalizeLinkBase(url) {
+  const sanitized = String(url || '').trim().replace(/\/+$/, '');
+  return sanitized
+    .replace(/\/:token$/i, '')
+    .replace(/\/{token}$/i, '')
+    .replace(/\/:id$/i, '');
+}
+
 function buildVerificationLink(token) {
-  return `${verifyEmailUrl.replace(/\/$/, '')}/${token}`;
+  return `${normalizeLinkBase(verifyEmailUrl)}/${token}`;
 }
 
 function buildResetLink(token) {
-  return `${resetPasswordUrl.replace(/\/$/, '')}/${token}`;
+  return `${normalizeLinkBase(resetPasswordUrl)}/${token}`;
 }
 
 async function sendEmail({ to, subject, html }) {

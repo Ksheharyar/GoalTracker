@@ -42,7 +42,7 @@ function VerifyEmailForm({ token }) {
 
     const timeout = window.setTimeout(() => {
       router.replace('/login?verified=1');
-    }, 1800);
+    }, 3200);
 
     return () => window.clearTimeout(timeout);
   }, [router, success]);
@@ -58,8 +58,10 @@ function VerifyEmailForm({ token }) {
 
       {success ? (
         <>
-          <h2 className="mt-6 font-display text-3xl font-semibold tracking-tight text-white">Email verified</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-300">Your account is now active. Redirecting you to login...</p>
+          <h2 className="mt-6 font-display text-3xl font-semibold tracking-tight text-white">You are verified. Let’s get started.</h2>
+          <p className="mt-4 text-sm leading-7 text-slate-300">Your account is now active and ready for your first focused streak.</p>
+          <p className="mt-2 text-sm leading-7 text-cyan-100">"Small daily progress beats occasional intensity."</p>
+          <p className="mt-4 text-sm leading-7 text-slate-300">Taking you to login...</p>
         </>
       ) : null}
 

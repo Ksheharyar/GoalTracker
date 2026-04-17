@@ -93,13 +93,11 @@ function AuthForm({ mode }) {
 
         <h2 className="mt-6 font-display text-3xl font-semibold tracking-tight text-white">Check your email</h2>
         <p className="mt-4 text-sm leading-7 text-slate-300">{notice}</p>
+        <p className="mt-2 text-sm leading-7 text-slate-400">We will unlock your account right after you verify your email link.</p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link href="/verify-email" className="font-semibold text-cyan-200 hover:text-cyan-100">
             Didn’t get it? Send verification again
-          </Link>
-          <Link href="/login" className="font-semibold text-cyan-200 hover:text-cyan-100">
-            Go to login
           </Link>
         </div>
       </Card>
