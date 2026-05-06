@@ -70,7 +70,6 @@ Express.js
 JWT Authentication
 
 Database:
-
 MongoDB Atlas
 
 Infrastructure:
