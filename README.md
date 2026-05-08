@@ -46,6 +46,7 @@ RESTful authentication endpoints
 Token-based verification routes
 Password reset workflow endpoints
 Secure environment-based configuration
+
 🔐 Authentication Flow
 
 GoalTracker implements a production-ready account lifecycle:
