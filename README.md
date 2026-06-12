@@ -5,7 +5,7 @@ GoalTracker is a full-stack web application designed to help users build consist
 The platform provides secure authentication, email verification, password reset functionality, session tracking, and production-ready deployment using modern cloud infrastructure.
 
 This project demonstrates real-world full-stack architecture, API integration, authentication flows, database design, and live SaaS-style deployment.
-
+ 
 🌐 Live Website
 
 Access the production version here:   
