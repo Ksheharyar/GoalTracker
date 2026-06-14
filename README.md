@@ -1,4 +1,4 @@
- 🎯 GoalTracker — Full-Stack Productivity Web App 
+  🎯 GoalTracker — Full-Stack Productivity Web App 
 
 GoalTracker is a full-stack web application designed to help users build consistency by tracking daily focused work sessions and visualizing progress through a GitHub-style activity heatmap.
 
