@@ -10,7 +10,7 @@ This project demonstrates real-world full-stack architecture, API integration, a
 
 Access the production version here:   
 
-https://goaltracker.tech   
+https://goaltracker.tech       ,
 
 🧠 Features Implemented : 
 Secure Authentication System
