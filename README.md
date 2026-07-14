@@ -14,7 +14,7 @@ https://goaltracker.tech       ,
 
 🧠 Features Implemented : 
 Secure Authentication System
-User signup & login system
+User signup & login system 
 Email verification workflow
 Password reset via email
 JWT-based session handling
