@@ -7,7 +7,7 @@ The platform provides secure authentication, email verification, password reset 
 This project demonstrates real-world full-stack architecture, API integration, authentication flows, database design, and live SaaS-style deployment.
  
 🌐 Live Website
-
+ 
 Access the production version here:      
 
 https://goaltracker.tech       ,
