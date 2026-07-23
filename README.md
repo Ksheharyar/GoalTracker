@@ -19,7 +19,6 @@ Email verification workflow
 Password reset via email
 JWT-based session handling
 Secure cookie configuration
-Goal Tracking Dashboard
 Daily focus session tracking
 GitHub-style consistency heatmap
 Session logging and persistence
