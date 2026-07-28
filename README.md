@@ -16,7 +16,7 @@ https://goaltracker.tech       ,
 Secure Authentication System
 User signup & login system 
 Email verification workflow
-Password reset via email
+Password reset via email 
 JWT-based session handling
 Secure cookie configuration
 Daily focus session tracking
