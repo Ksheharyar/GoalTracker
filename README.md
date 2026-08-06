@@ -13,7 +13,7 @@ Access the production version here:
 https://goaltracker.tech       , 
 
 🧠 Features Implemented : 
-Secure Authentication System
+Secure Authentication System 
 User signup & login system 
 Email verification workflow
 Password reset via email 
