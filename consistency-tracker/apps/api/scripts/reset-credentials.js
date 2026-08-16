@@ -1,5 +1,21 @@
+/**
+ * ⚠️  DANGER: LOCAL DEVELOPMENT ONLY
+ *
+ * This script deletes ALL users, goals, and sessions from the database.
+ * It will NEVER run against a production database (NODE_ENV=production guard below).
+ *
+ * DO NOT run this against the production MONGODB_URI.
+ */
+
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '../../.env' });
+
+// ── Production safety guard ──────────────────────────────────────────────────
+if (process.env.NODE_ENV === 'production') {
+  console.error('⛔  reset-credentials.js must not be run in production. Aborting.');
+  process.exit(1);
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 const User = require('../src/models/User');
 const Goal = require('../src/models/Goal');
@@ -8,7 +24,7 @@ const Session = require('../src/models/Session');
 async function resetCredentials() {
   try {
     const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/keepon-dev';
-    
+
     console.log('Connecting to MongoDB...');
     await mongoose.connect(mongoUri);
     console.log('✓ Connected to MongoDB');
